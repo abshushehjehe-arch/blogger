@@ -138,6 +138,7 @@
             
             <!-- JavaScript for Timer & Video Logic -->
             <script>
+              //<![CDATA[
               document.addEventListener("DOMContentLoaded", function() {
                 var postBody = document.getElementById("post-body");
                 var videoUrlDiv = document.getElementById("video-url");
@@ -150,7 +151,7 @@
                 var postThumbnail = document.getElementById("post-thumbnail");
 
                 // Check if user has added <div id="video-url"> inside post body
-                if (videoUrlDiv &amp;&amp; watchBtn) {
+                if (videoUrlDiv && watchBtn) {
                   // Show the play button overlay
                   playOverlay.classList.remove("hidden");
                   
@@ -167,7 +168,7 @@
                       timeLeft--;
                       timerCount.innerText = timeLeft;
                       
-                      if (timeLeft &lt;= 0) {
+                      if (timeLeft <= 0) {
                         clearInterval(countdown);
                         
                         // Hide thumbnail, show video
@@ -191,14 +192,14 @@
                           if (videoUrl.includes("youtu.be/")) {
                             ytId = videoUrl.split("youtu.be/")[1].split("?")[0];
                           } else if (videoUrl.includes("watch?v=")) {
-                            ytId = videoUrl.split("watch?v=")[1].split("&amp;")[0];
+                            ytId = videoUrl.split("watch?v=")[1].split("&")[0];
                           }
-                          iframe.src = "https://www.youtube.com/embed/" + ytId + "?autoplay=1&amp;rel=0";
+                          iframe.src = "https://www.youtube.com/embed/" + ytId + "?autoplay=1&rel=0";
                         } else {
                           iframe.src = videoUrl;
                         }
                         
-                        videoContainer.innerHTML = "&lt;div class='relative pt-[56.25%] w-full'&gt;&lt;/div&gt;";
+                        videoContainer.innerHTML = "<div class='relative pt-[56.25%] w-full'></div>";
                         videoContainer.firstChild.appendChild(iframe);
                       }
                     }, 1000);
@@ -208,6 +209,7 @@
                    postThumbnail.classList.remove("opacity-60");
                 }
               });
+              //]]>
             </script>
           </b:if>
           
