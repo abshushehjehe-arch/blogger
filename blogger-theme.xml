@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:js='true' b:responsive='true' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1' name='viewport'/>
+  <title><data:blog.pageTitle/></title>
+  <b:include data='blog' name='all-head-content'/>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#E50914',
+            dark: '#141414',
+            darker: '#000000',
+            surface: '#222222'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Blogger Base CSS -->
+  <b:skin><![CDATA[
+    body { background-color: #141414; color: white; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    .post-body img { max-width: 100%; border-radius: 4px; margin-bottom: 1rem; }
+    .post-body p { margin-bottom: 1rem; line-height: 1.6; }
+    .post-body h2 { font-size: 1.5rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; }
+    .post-body h3 { font-size: 1.25rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  ]]></b:skin>
+</head>
+<body class="bg-dark text-white min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-black/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#333]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center h-16">
+        <a expr:href='data:blog.homepageUrl' class="text-brand font-black text-2xl tracking-tighter uppercase">
+          <data:blog.title/>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex-1 w-full max-w-7xl mx-auto pt-8 pb-16">
+    <b:section id='main' class='main' showaddelement='no'>
+      <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
+        <b:widget-settings>
+          <b:widget-setting name='showDateHeader'>false</b:widget-setting>
+        </b:widget-settings>
+        
+        <b:includable id='main' var='top'>
+          
+          <!-- HOMEPAGE GRID VIEW -->
+          <b:if cond='data:view.isMultipleItems'>
+            <div class="px-4 sm:px-6 lg:px-8 mb-4">
+               <h2 class="text-xl font-bold text-white mb-4">Trending Now</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8">
+              <b:loop values='data:posts' var='post'>
+                <article class="relative rounded-md overflow-hidden cursor-pointer group bg-surface border border-transparent hover:border-[#555] transition-all aspect-[16/9]">
+                  <a expr:href='data:post.url' class="absolute inset-0 z-20"></a>
+                  
+                  <!-- Thumbnail -->
+                  <b:if cond='data:post.featuredImage'>
+                    <img expr:src='data:post.featuredImage' class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <b:else/>
+                    <div class="w-full h-full bg-[#333] flex items-center justify-center text-gray-500 font-medium">No Cover</div>
+                  </b:if>
+                  
+                  <!-- Gradient Overlay -->
+                  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  <!-- Title on Hover -->
+                  <div class="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 translate-y-2 group-hover:translate-y-0 pointer-events-none">
+                    <h2 class="text-sm font-bold text-white leading-tight mb-1 line-clamp-1"><data:post.title/></h2>
+                    <div class="flex items-center gap-2 text-[10px] text-gray-300 font-semibold mb-2">
+                      <span class="text-[#46d369]">New</span>
+                      <span class="border border-gray-500 px-1 rounded-sm">16+</span>
+                    </div>
+                  </div>
+                </article>
+              </b:loop>
+            </div>
+            
+            <!-- Pagination -->
+            <b:include name='nextprev'/>
+          </b:if>
+
+          <!-- SINGLE POST VIEW -->
+          <b:if cond='data:view.isSingleItem'>
+            <b:loop values='data:posts' var='post'>
+              <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                
+                <!-- Back Button -->
+                <a expr:href='data:blog.homepageUrl' class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 font-semibold">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                  <span>Back to Home</span>
+                </a>
+                
+                <h1 class="text-3xl sm:text-5xl font-bold text-white mb-6 uppercase tracking-tighter"><data:post.title/></h1>
+                
+                <!-- Video Player Container (Hidden initially) -->
+                <div id="video-container" class="mb-8 relative rounded-sm overflow-hidden border border-[#333] bg-black hidden">
+                </div>
+
+                <!-- Thumbnail & Watch Now Container -->
+                <div id="thumbnail-container" class="mb-8">
+                  <b:if cond='data:post.featuredImage'>
+                    <div class="rounded-sm overflow-hidden border border-[#333] relative">
+                      <img expr:src='data:post.featuredImage' class="w-full max-h-[500px] object-cover opacity-60" id="post-thumbnail" />
+                      
+                      <!-- Play Button Overlay -->
+                      <div id="play-overlay" class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-10 hidden">
+                        <button id="watch-now-btn" class="px-8 py-4 bg-brand hover:bg-red-700 text-white font-bold rounded-sm text-lg sm:text-xl flex items-center gap-3 transition-all shadow-xl active:scale-95">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                          Watch Now
+                        </button>
+                        
+                        <div id="timer-display" class="hidden px-8 py-3 bg-[#333] text-brand font-bold rounded-sm text-lg sm:text-2xl shadow-xl animate-pulse">
+                           Video starting in <span id="timer-count">5</span> seconds...
+                        </div>
+                      </div>
+                    </div>
+                  </b:if>
+                </div>
+
+                <!-- Post Body (Where user writes content) -->
+                <div class="prose prose-invert max-w-none mb-12 text-gray-200" id="post-body">
+                  <data:post.body/>
+                </div>
+                
+              </div>
+            </b:loop>
+            
+            <!-- JavaScript for Timer & Video Logic -->
+            <script>
+              document.addEventListener("DOMContentLoaded", function() {
+                var postBody = document.getElementById("post-body");
+                var videoUrlDiv = document.getElementById("video-url");
+                var watchBtn = document.getElementById("watch-now-btn");
+                var timerDisplay = document.getElementById("timer-display");
+                var timerCount = document.getElementById("timer-count");
+                var thumbnailContainer = document.getElementById("thumbnail-container");
+                var videoContainer = document.getElementById("video-container");
+                var playOverlay = document.getElementById("play-overlay");
+                var postThumbnail = document.getElementById("post-thumbnail");
+
+                // Check if user has added <div id="video-url"> inside post body
+                if (videoUrlDiv &amp;&amp; watchBtn) {
+                  // Show the play button overlay
+                  playOverlay.classList.remove("hidden");
+                  
+                  var videoUrl = videoUrlDiv.innerText.trim();
+                  
+                  watchBtn.addEventListener("click", function() {
+                    watchBtn.classList.add("hidden");
+                    timerDisplay.classList.remove("hidden");
+                    
+                    var timeLeft = 5;
+                    timerCount.innerText = timeLeft;
+                    
+                    var countdown = setInterval(function() {
+                      timeLeft--;
+                      timerCount.innerText = timeLeft;
+                      
+                      if (timeLeft &lt;= 0) {
+                        clearInterval(countdown);
+                        
+                        // Hide thumbnail, show video
+                        thumbnailContainer.classList.add("hidden");
+                        videoContainer.classList.remove("hidden");
+                        
+                        // Create iframe
+                        var iframe = document.createElement("iframe");
+                        iframe.className = "absolute inset-0 w-full h-full";
+                        iframe.setAttribute("allow", "autoplay; fullscreen");
+                        iframe.setAttribute("allowfullscreen", "true");
+                        
+                        // Handle Google Drive vs YouTube
+                        if (videoUrl.includes("drive.google.com/file/d/")) {
+                          var match = videoUrl.match(/d\/([a-zA-Z0-9_-]+)/);
+                          if (match) {
+                            iframe.src = "https://drive.google.com/file/d/" + match[1] + "/preview";
+                          }
+                        } else if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
+                          var ytId = "";
+                          if (videoUrl.includes("youtu.be/")) {
+                            ytId = videoUrl.split("youtu.be/")[1].split("?")[0];
+                          } else if (videoUrl.includes("watch?v=")) {
+                            ytId = videoUrl.split("watch?v=")[1].split("&amp;")[0];
+                          }
+                          iframe.src = "https://www.youtube.com/embed/" + ytId + "?autoplay=1&amp;rel=0";
+                        } else {
+                          iframe.src = videoUrl;
+                        }
+                        
+                        videoContainer.innerHTML = "&lt;div class='relative pt-[56.25%] w-full'&gt;&lt;/div&gt;";
+                        videoContainer.firstChild.appendChild(iframe);
+                      }
+                    }, 1000);
+                  });
+                } else if (postThumbnail) {
+                   // If no video URL is provided, show thumbnail normally without play button
+                   postThumbnail.classList.remove("opacity-60");
+                }
+              });
+            </script>
+          </b:if>
+          
+        </b:includable>
+        
+        <!-- Pagination Includable -->
+        <b:includable id='nextprev'>
+          <div class="flex justify-between items-center px-4 sm:px-6 lg:px-8 mt-12 text-sm font-bold text-gray-400">
+            <b:if cond='data:newerPageUrl'>
+              <a expr:href='data:newerPageUrl' class="hover:text-white">&lt; Newer</a>
+            <b:else/><span></span></b:if>
+            <b:if cond='data:olderPageUrl'>
+              <a expr:href='data:olderPageUrl' class="hover:text-white">Older &gt;</a>
+            </b:else/><span></span></b:if>
+          </div>
+        </b:includable>
+        
+      </b:widget>
+    </b:section>
+  </div>
+</body>
+</html>

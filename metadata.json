@@ -1,0 +1,6 @@
+{
+  "name": "Blogger Studio",
+  "description": "A modern blogging website with a full-featured admin panel to create, edit, upload, and manage blog posts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
